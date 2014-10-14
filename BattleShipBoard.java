@@ -58,6 +58,30 @@ public class BattleShipBoard
 		}
 	}
 
+	private void createSquare(int x1, int y1, int x2, int y2)
+	{
+		for(int x = x1; x < x2; x++) 
+		{
+			Board[x1][x] = 1;
+			//Board[x1+1][x] = 2;
+		}
+		for(int x = x2; x > x1; x--)
+		{
+			Board[x][x2] = 1;
+			//Board[x][x2+1] = 2;
+		}
+		for(int y = y1; y > y2; y--)
+		{
+			Board[y1][y] = 1;
+			//Board[y1+1][y] = 2;
+		}
+		for(int y = y2; y < y1; y++) 
+		{
+			Board[y][y2] = 1;
+			//Board[y][y2+1] = 2;
+		}
+	}
+
 	public String toString()
 	{
 		String tmp = "";
