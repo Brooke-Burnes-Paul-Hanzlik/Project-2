@@ -6,6 +6,7 @@ public class BattleShipBoard
 
 	//hanzl034 and burne188 worked together
 	private int [][] Board;
+	private int numShips;
 
 	public BattleShipBoard(int m, int n) 
 	{
@@ -70,6 +71,7 @@ public class BattleShipBoard
 				createHorizontalLine(x, x + len - 1, y, 0);
 				makeRect(x - 1, y - 1, x + len, y + 1, 1);
 				makeRect(x - 2, y - 2, x + len + 1, y + 2, 2);
+				numShips++;
 			}
 		}
 		else
@@ -83,6 +85,7 @@ public class BattleShipBoard
 				createVerticalLine(y, y + len - 1, x, 0);
 				makeRect(x - 1, y - 1, x + 1, y + len, 1);
 				makeRect(x - 2, y - 2, x + 2, y + len + 1, 2);
+				numShips++;
 			}		
 		}
 		
@@ -94,32 +97,22 @@ public class BattleShipBoard
 	{
 		return x >= 0 && y >= 0 && x < Board.length && y < Board[x].length && Board[x][y] != 0;
 	}
-	
-	/* createSquare method created by Brooke Burnes
-	private void createSquare(int x1, int y1, int x2, int y2)
+
+	private int shoot(int x ,int y)
 	{
-		for(int x = x1; x < x2; x++) 
+		int ret;
+		if( x < 0 || y < 0 || x >= Board.length || y >= Board[x].length)
 		{
-			Board[x1][x] = 1;
-			//Board[x1+1][x] = 2;
+			ret = -1;
 		}
-		for(int x = x2; x > x1; x--)
+		else
 		{
-			Board[x][x2] = 1;
-			//Board[x][x2+1] = 2;
+			ret = Board[x][y];
+			Board[x][y] = 8;
 		}
-		for(int y = y1; y > y2; y--)
-		{
-			Board[y1][y] = 1;
-			//Board[y1+1][y] = 2;
-		}
-		for(int y = y2; y < y1; y++) 
-		{
-			Board[y][y2] = 1;
-			//Board[y][y2+1] = 2;
-		}
+
+		return ret;
 	}
-	*/
 	
 	private void makeRect(int x1, int y1, int x2, int y2, int fill)
 	{
@@ -175,16 +168,83 @@ public class BattleShipBoard
 		return tmp;
 	}
 
-	public static void main(String[] args) 
+	public static void main(String args[]) 
 	{
-		Scanner scan = new Scanner(System.in);
-		System.out.print("Rows: ");
-		int m = scan.nextInt();
-		System.out.print("Cols: ");
-		int n = scan.nextInt();
-		
-		BattleShipBoard testBoard = new BattleShipBoard(m,n);
-		System.out.println(testBoard);
-	}
+		boolean play = true;
+		while(play)
+		{
+			Scanner scan = new Scanner(System.in);
+			int m = 0;
+			int n = 0;
+			while(m < 3 || m > 10)
+			{
+				System.out.print("Please enter a value between 3 and 10: ");
+				m = scan.nextInt();
+			}
+			while(n < 3 || n > 10)
+			{
+				System.out.print("Please enter another value between 3 and 10: ");
+				n = scan.nextInt();
+			}
+			
+			BattleShipBoard testBoard = new BattleShipBoard(m,n);
+			
+			System.out.println("There are " + testBoard.numShips + " to destroy!");
+			System.out.println("Coordinates start a (0,0)");
 
+			int hits = 0;
+			int attempts = 0;
+			int x, y, value;
+			while(hits < testBoard.numShips * 3)
+			{
+				System.out.println("Please enter two integers to fire: ");
+				x = scan.nextInt();
+				y = scan.nextInt();
+
+				value = testBoard.shoot(x,y);
+				if(value == -1)
+				{
+					System.out.println("Invalid firing coordinates");
+				}
+				else if(value == 8)
+				{
+					System.out.println("You've already guessed that silly!");
+					System.out.println("One more attempt shall be added to score");
+					attempts++;
+				}
+				else if(value == 2)
+				{
+					System.out.println("A miss but close.");
+				}
+				else if(value == 1)
+				{
+					System.out.println("A miss but very close!");
+				}
+				else if (value == 0)
+				{
+					System.out.println("A hit!");
+					hits++;
+				}
+
+				attempts++;
+				System.out.println("Total Score So Far!");
+				System.out.println("Hit/Miss Ratio: " + ((float)hits/attempts) + " Score: " + attempts);
+			}
+			System.out.println("You Won!");
+			System.out.println("Play again? (yes/no)");
+			String yn = "";
+			while(!(yn.equals("yes") || yn.equals("no")))
+			{
+				yn = scan.next();
+			}
+			if(yn.equals("yes"))
+			{
+				play = true;
+			}
+			else
+			{
+				play = false;
+			}
+		}
+	}
 }
